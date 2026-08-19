@@ -1,0 +1,39 @@
+name: Sync Formula and Casks from simulator-broker
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone product default branch
+        run: git clone --depth 1 https://github.com/fiveonecode/simulator-broker.git "$RUNNER_TEMP/product"
+
+      - name: Copy Formula and Casks when the product tree has them
+        run: |
+          product="$RUNNER_TEMP/product"
+          if [[ ! -f "$product/Formula/simbroker.rb" ]]; then
+            echo "Product tree has no Formula/simbroker.rb; leaving tap contents unchanged."
+            exit 0
+          fi
+          mkdir -p Formula Casks
+          cp -R "$product/Formula/." Formula/
+          cp -R "$product/Casks/." Casks/
+          git add Formula Casks
+          if git diff --cached --quiet; then
+            echo "Tap already matches product Formula and Casks."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync Formula and Casks from fiveonecode/simulator-broker."
+          git push
