@@ -13,6 +13,5 @@ Formula and cask source of truth is
 under `Formula/` and `Casks/`. A scheduled workflow copies those paths
 here only when `Formula/simbroker.rb` exists on product `main`.
 
-The operator app cask expects a signed, notarized
-`Simulator-Broker-<version>.zip` on the product GitHub Release. The
-current Alpha release attaches the CLI tarball, not that zip.
+The operator app cask installs the signed, notarized
+`Simulator-Broker-<version>.zip` from the matching product GitHub Release.
