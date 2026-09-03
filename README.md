@@ -1,5 +1,7 @@
 # Homebrew tap for Simulator Broker
 
+[![CI](https://github.com/fiveonecode/homebrew-simulator-broker/actions/workflows/ci.yml/badge.svg)](https://github.com/fiveonecode/homebrew-simulator-broker/actions/workflows/ci.yml)
+
 ```bash
 brew install fiveonecode/simulator-broker/simbroker
 ```
