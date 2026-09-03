@@ -4,7 +4,10 @@ set -euo pipefail
 
 export HOMEBREW_NO_ANALYTICS="${HOMEBREW_NO_ANALYTICS:-1}"
 export HOMEBREW_NO_AUTO_UPDATE="${HOMEBREW_NO_AUTO_UPDATE:-1}"
+export HOMEBREW_NO_COLOR="${HOMEBREW_NO_COLOR:-1}"
 export HOMEBREW_NO_REQUIRE_TAP_TRUST="${HOMEBREW_NO_REQUIRE_TAP_TRUST:-1}"
+unset GITHUB_ACTIONS
+unset GITHUB_WORKFLOW
 
 repo_root="$(cd "$(dirname "${0}")/.." && pwd)"
 overlay_dir="$(brew --repository)/Library/Taps/fiveonecodeci/homebrew-simulator-broker"
@@ -36,18 +39,17 @@ unexpected=0
 while IFS= read -r line
 do
   [[ -z "${line// /}" ]] && continue
-  case "${line}" in
-    "==>"* | Already\ downloaded:* | Error:* | audit\ for* | fiveonecodeci/simulator-broker/simulator-broker)
-      continue
-      ;;
-    *"is a GitHub pre-release."*)
-      continue
-      ;;
-    *"differs from '' retrieved by livecheck."*)
+  stripped="$(printf '%s' "${line}" | sed $'s/\033\\[[0-9;]*[A-Za-z]//g')"
+  if [[ ! "${stripped}" =~ ^[[:space:]]+[-*][[:space:]] ]]
+  then
+    continue
+  fi
+  case "${stripped}" in
+    *"is a GitHub pre-release."* | *"differs from '' retrieved by livecheck."*)
       continue
       ;;
     *)
-      printf 'Unexpected cask --online audit line: %s\n' "${line}" >&2
+      printf 'Unexpected cask --online audit finding: %s\n' "${stripped}" >&2
       unexpected=1
       ;;
   esac
