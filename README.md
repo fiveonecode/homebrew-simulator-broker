@@ -13,5 +13,10 @@ Formula and cask source of truth is
 under `Formula/` and `Casks/`. A scheduled workflow copies those paths
 here only when `Formula/simbroker.rb` exists on product `main`.
 
+Pull requests and pushes to `main` run `script/verify.sh`: `brew style`,
+`brew audit --strict`, formula `--online` audit, and cask `--online` audit
+that allows only the known Alpha pre-release and empty-livecheck findings.
+The same command is the origin Autopilot verify contract in `autopilot.yml`.
+
 The operator app cask installs the signed, notarized
 `Simulator-Broker-<version>.zip` from the matching product GitHub Release.

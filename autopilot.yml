@@ -1,0 +1,10 @@
+version: 1
+verify:
+  command: bash script/verify.sh
+contract:
+  protectedPaths:
+    - autopilot.yml
+    - script/verify.sh
+    - .github/workflows/ci.yml
+    - Formula/**
+    - Casks/**
